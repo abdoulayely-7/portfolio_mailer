@@ -14,21 +14,22 @@ export class MailService {
             .replace("{{email}}", data.email)
             .replace("{{message}}", data.message);
 
-        // ✅ Transporteur SendGrid
+        // Configuration Gmail SMTP
         const transporter = nodemailer.createTransport({
-            service: "SendGrid",
+            service: "gmail",
             auth: {
-                api_key: process.env.SENDGRID_API_KEY!,
-            } as any,
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
         });
 
         await transporter.sendMail({
-            from: `"Portfolio Abdoulaye" <no-reply@tondomaine.com>`,
+            from: `"Portfolio Abdoulaye" <${process.env.EMAIL_USER}>`,
             to: process.env.TO_EMAIL,
             subject: "📩 Nouveau message depuis ton portfolio",
             html,
         });
 
-        console.log("✅ Mail envoyé avec succès via SendGrid");
+        console.log("✅ Mail envoyé avec succès via Gmail");
     }
 }
