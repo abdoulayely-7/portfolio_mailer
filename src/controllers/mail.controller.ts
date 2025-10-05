@@ -10,6 +10,7 @@ export class MailController {
     }
 
     async sendMail(req: Request, res: Response): Promise<Response> {
+        console.log("Requête reçue dans sendMail");
         const { nom, email, message } = req.body;
 
         if (!nom || !email || !message) {

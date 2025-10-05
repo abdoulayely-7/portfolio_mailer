@@ -4,6 +4,7 @@ import path from "path";
 
 export class MailService {
     async sendPortfolioMail(data: { nom: string; email: string; message: string }) {
+        console.log("Envoi du mail en cours");
         const templatePath = path.resolve("src/templates/mail.html");
         let html = fs.readFileSync(templatePath, "utf8");
 
