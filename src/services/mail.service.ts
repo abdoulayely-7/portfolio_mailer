@@ -5,8 +5,8 @@ import path from "path";
 export class MailService {
     async sendPortfolioMail(data: { nom: string; email: string; message: string }) {
         console.log("Envoi du mail en cours");
-        console.log("EMAIL_USER défini:", !!process.env.EMAIL_USER);
-        console.log("EMAIL_PASS défini:", !!process.env.EMAIL_PASS);
+        console.log("SENDGRID_API_KEY défini:", !!process.env.SENDGRID_API_KEY);
+        console.log("FROM_EMAIL défini:", !!process.env.FROM_EMAIL);
         console.log("TO_EMAIL défini:", !!process.env.TO_EMAIL);
         const templatePath = path.resolve("src/templates/mail.html");
         let html = fs.readFileSync(templatePath, "utf8");
