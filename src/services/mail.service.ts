@@ -17,22 +17,24 @@ export class MailService {
             .replace("{{email}}", data.email)
             .replace("{{message}}", data.message);
 
-        // Configuration Gmail SMTP
+        // Configuration SendGrid SMTP (plus fiable pour les déploiements cloud)
         const transporter = nodemailer.createTransport({
-            service: "gmail",
+            host: "smtp.sendgrid.net",
+            port: 587,
+            secure: false, // true for 465, false for other ports
             auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
+                user: "apikey", // SendGrid utilise "apikey" comme user
+                pass: process.env.SENDGRID_API_KEY, // Clé API SendGrid
             },
         });
 
         await transporter.sendMail({
-            from: `"Portfolio Abdoulaye" <${process.env.EMAIL_USER}>`,
+            from: `"Portfolio Abdoulaye" <${process.env.FROM_EMAIL}>`, // Adresse vérifiée sur SendGrid
             to: process.env.TO_EMAIL,
             subject: "📩 Nouveau message depuis ton portfolio",
             html,
         });
 
-        console.log("✅ Mail envoyé avec succès via Gmail");
+        console.log("✅ Mail envoyé avec succès via SendGrid");
     }
 }
