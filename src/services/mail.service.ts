@@ -29,8 +29,12 @@ export class MailService {
             html,
         };
 
-        await sgMail.send(msg);
-
-        console.log("✅ Mail envoyé avec succès via SendGrid API");
+        try {
+            await sgMail.send(msg);
+            console.log("✅ Mail envoyé avec succès via SendGrid API");
+        } catch (error: any) {
+            console.error("Erreur SendGrid:", error.response?.body?.errors || error.message);
+            throw error;
+        }
     }
 }
