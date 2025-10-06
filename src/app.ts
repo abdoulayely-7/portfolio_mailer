@@ -15,7 +15,7 @@ app.use(cors({
     if (!origin) return callback(null, true);
     
     // Liste des origines autorisées
-    const allowedOrigins = ['https://abdoulaye-lydev.vercel.app/'];
+    const allowedOrigins = ['https://abdoulaye-lydev.vercel.app'];
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
