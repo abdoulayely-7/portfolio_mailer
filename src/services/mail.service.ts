@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
 import fs from "fs";
 import path from "path";
 
@@ -8,6 +9,10 @@ export class MailService {
         console.log("SENDGRID_API_KEY défini:", !!process.env.SENDGRID_API_KEY);
         console.log("FROM_EMAIL défini:", !!process.env.FROM_EMAIL);
         console.log("TO_EMAIL défini:", !!process.env.TO_EMAIL);
+
+        // Configurer SendGrid
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+
         const templatePath = path.resolve("src/templates/mail.html");
         let html = fs.readFileSync(templatePath, "utf8");
 
@@ -17,24 +22,15 @@ export class MailService {
             .replace("{{email}}", data.email)
             .replace("{{message}}", data.message);
 
-        // Configuration SendGrid SMTP (plus fiable pour les déploiements cloud)
-        const transporter = nodemailer.createTransport({
-            host: "smtp.sendgrid.net",
-            port: 587,
-            secure: false, // true for 465, false for other ports
-            auth: {
-                user: "apikey", // SendGrid utilise "apikey" comme user
-                pass: process.env.SENDGRID_API_KEY, // Clé API SendGrid
-            },
-        });
-
-        await transporter.sendMail({
-            from: `"Portfolio Abdoulaye" <${process.env.FROM_EMAIL}>`, // Adresse vérifiée sur SendGrid
+        const msg = {
             to: process.env.TO_EMAIL,
+            from: process.env.FROM_EMAIL!, // Adresse vérifiée sur SendGrid
             subject: "📩 Nouveau message depuis ton portfolio",
             html,
-        });
+        };
 
-        console.log("✅ Mail envoyé avec succès via SendGrid");
+        await sgMail.send(msg);
+
+        console.log("✅ Mail envoyé avec succès via SendGrid API");
     }
 }
