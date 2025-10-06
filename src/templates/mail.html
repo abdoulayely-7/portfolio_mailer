@@ -2,51 +2,444 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Nouveau message - Abdoulaye Ly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Message - Abdoulaye Ly</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .email-container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.1);
+        }
+        
+        /* Header avec effet terminal */
+        .header {
+            background: linear-gradient(135deg, #1e1e1e 0%, #0f0f0f 100%);
+            border-bottom: 2px solid rgba(99, 102, 241, 0.3);
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .terminal-bar {
+            background: #0a0a0a;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+        
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+        
+        .terminal-title {
+            margin-left: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.5px;
+        }
+        
+        .header-content {
+            padding: 32px 24px;
+            position: relative;
+        }
+        
+        .header-line {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: #999;
+        }
+        
+        .header-line.main {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            animation: gradientShift 8s ease infinite;
+            background-size: 200% 200%;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .keyword { color: #c792ea; }
+        .string { color: #a5e844; }
+        .function { color: #82aaff; }
+        .comment { color: #546e7a; font-style: italic; }
+        .variable { color: #eeffff; }
+        
+        /* Content Section */
+        .content {
+            padding: 32px 24px;
+            background: #0f0f0f;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            font-size: 13px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #a5e844;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        .status-text {
+            color: #a5e844;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* Data Card - Style JSON */
+        .data-card {
+            background: #1a1a1a;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .data-card::before {
+            content: 'JSON';
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 10px;
+            color: rgba(99, 102, 241, 0.4);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .json-line {
+            color: #eeffff;
+            padding-left: 16px;
+        }
+        
+        .json-line.indent-2 { padding-left: 32px; }
+        .json-line.indent-3 { padding-left: 48px; }
+        
+        .json-key {
+            color: #82aaff;
+        }
+        
+        .json-string {
+            color: #a5e844;
+        }
+        
+        .json-bracket {
+            color: #89ddff;
+        }
+        
+        /* Message Box - Style code block */
+        .message-container {
+            margin-top: 16px;
+        }
+        
+        .code-header {
+            background: #0a0a0a;
+            padding: 8px 16px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .code-lang {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: rgba(165, 232, 68, 0.8);
+            font-weight: 600;
+        }
+        
+        .message-box {
+            background: #0a0a0a;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 0 0 6px 6px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            color: #eeffff;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(99, 102, 241, 0.1);
+        }
+        
+        .cta-text {
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 16px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(99, 102, 241, 0.5);
+        }
+        
+        /* Footer */
+        .footer {
+            background: #0a0a0a;
+            padding: 24px;
+            border-top: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-section {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        
+        .footer-label {
+            color: #6366f1;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .footer-value {
+            color: #999;
+            line-height: 1.6;
+        }
+        
+        .footer-value a {
+            color: #a855f7;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-value a:hover {
+            color: #ec4899;
+        }
+        
+        .footer-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.3), transparent);
+            margin: 20px 0;
+        }
+        
+        .footer-note {
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #546e7a;
+            line-height: 1.6;
+        }
+        
+        .footer-note .highlight {
+            color: #6366f1;
+        }
+        
+        /* Scrollbar */
+        .message-box::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .message-box::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        .message-box::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 4px;
+        }
+        
+        .message-box::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.6);
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .header-content { padding: 24px 16px; }
+            .content { padding: 24px 16px; }
+            .footer { padding: 20px 16px; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .header-line.main { font-size: 16px; }
+        }
+    </style>
 </head>
-<body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f4f4f4;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4; padding:20px 0;">
-    <tr>
-        <td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:8px; overflow:hidden;">
-                <!-- Header -->
-                <tr>
-                    <td align="center" style="background-color:#1d4ed8; color:white; padding:20px; font-size:20px; font-weight:bold;">
-                        👋 Nouveau message reçu
-                    </td>
-                </tr>
-                <!-- Content -->
-                <tr>
-                    <td style="padding:20px; color:#333; line-height:1.5;">
-                        <p>Bonjour Abdoulaye 👨‍💻,</p>
-                        <p>Tu as reçu un nouveau message via ton portfolio :</p>
+<body>
+    <div class="email-container">
+        <!-- Terminal Header -->
+        <div class="header">
+            <div class="terminal-bar">
+                <span class="terminal-dot dot-red"></span>
+                <span class="terminal-dot dot-yellow"></span>
+                <span class="terminal-dot dot-green"></span>
+                <span class="terminal-title">portfolio-notification.tsx</span>
+            </div>
+            
+            <div class="header-content">
+                <div class="header-line comment">// New contact request received</div>
+                <div class="header-line">
+                    <span class="keyword">const</span> 
+                    <span class="variable"> notification</span> = 
+                    <span class="function">new</span> 
+                    <span class="function">ContactMessage</span>();
+                </div>
+                <div class="header-line main">▸ New Portfolio Message</div>
+                <div class="header-line comment">// Someone wants to connect with you</div>
+            </div>
+        </div>
 
-                        <p><strong>Nom :</strong> {{nom}}</p>
-                        <p><strong>Email :</strong> {{email}}</p>
-                        <p><strong>Message :</strong></p>
-                        <p style="background-color:#f9f9f9; padding:10px; border:1px solid #ddd; border-radius:4px;">
-                            {{message}}
-                        </p>
+        <!-- Content -->
+        <div class="content">
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                <span class="status-text">ACTIVE_REQUEST</span>
+            </div>
 
-                        <p style="text-align:center; margin-top:20px;">
-                            <a href="https://tonportfolio.com" style="background-color:#1d4ed8; color:white; text-decoration:none; padding:12px 20px; border-radius:4px; display:inline-block;">
-                                Voir sur le site
-                            </a>
-                        </p>
-                    </td>
-                </tr>
-                <!-- Footer -->
-                <tr>
-                    <td align="center" style="background-color:#f1f1f1; padding:15px; font-size:12px; color:#555;">
-                        © 2025 Abdoulaye Ly — Développeur Full Stack<br>
-                        <a href="https://github.com/tonprofil" style="color:#1d4ed8; text-decoration:none;">GitHub</a> •
-                        <a href="https://linkedin.com/in/tonprofil" style="color:#1d4ed8; text-decoration:none;">LinkedIn</a> •
-                        <a href="mailto:tonemail@gmail.com" style="color:#1d4ed8; text-decoration:none;">Email</a>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+            <!-- Data Card - JSON Style -->
+            <div class="data-card">
+                <div class="json-line"><span class="json-bracket">{</span></div>
+                <div class="json-line indent-2">
+                    <span class="json-key">"sender"</span>: <span class="json-bracket">{</span>
+                </div>
+                <div class="json-line indent-3">
+                    <span class="json-key">"name"</span>: <span class="json-string">"{{nom}}"</span>,
+                </div>
+                <div class="json-line indent-3">
+                    <span class="json-key">"email"</span>: <span class="json-string">"{{email}}"</span>,
+                </div>
+                <div class="json-line indent-3">
+                    <span class="json-key">"timestamp"</span>: <span class="json-string">"{{timestamp}}"</span>
+                </div>
+                <div class="json-line indent-2"><span class="json-bracket">}</span>,</div>
+                
+                <div class="message-container">
+                    <div class="json-line indent-2">
+                        <span class="json-key">"message"</span>: <span class="json-string">"</span>
+                    </div>
+                    <div class="code-header">
+                        <span class="code-lang">TXT</span>
+                    </div>
+                    <div class="message-box">{{message}}</div>
+                    <div class="json-line indent-2"><span class="json-string">"</span></div>
+                </div>
+                
+                <div class="json-line"><span class="json-bracket">}</span></div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="cta-text">// Ready to respond?</div>
+                <a href="https://tonportfolio.com" class="cta-button">
+                    <span>→</span>
+                    <span>OPEN PORTFOLIO</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <div class="footer-label">// DEVELOPER</div>
+                    <div class="footer-value">
+                        Abdoulaye Ly<br>
+                        Full Stack Engineer
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <div class="footer-label">// CONNECT</div>
+                    <div class="footer-value">
+                        <a href="https://github.com/tonprofil">GitHub</a> /
+                        <a href="https://linkedin.com/in/tonprofil">LinkedIn</a><br>
+                        <a href="mailto:tonemail@gmail.com">Email</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-divider"></div>
+            
+            <div class="footer-note">
+                Auto-generated from <span class="highlight">portfolio.abdoulaye.dev</span><br>
+                © 2025 • All rights reserved
+            </div>
+        </div>
+    </div>
 </body>
 </html>
