@@ -1,40 +1,55 @@
-import nodemailer from "nodemailer";
-import sgMail from "@sendgrid/mail";
 import fs from "fs";
 import path from "path";
+import axios from "axios";
+
 
 export class MailService {
+    private baseUrl = 'https://api.brevo.com/v3';
+
     async sendPortfolioMail(data: { nom: string; email: string; message: string }) {
         console.log("Envoi du mail en cours");
-        console.log("SENDGRID_API_KEY défini:", !!process.env.SENDGRID_API_KEY);
-        console.log("FROM_EMAIL défini:", !!process.env.FROM_EMAIL);
-        console.log("TO_EMAIL défini:", !!process.env.TO_EMAIL);
 
-        // Configurer SendGrid
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+        const apiKey = process.env.BREVO_API_KEY;
+        const fromEmail = process.env.FROM_EMAIL;
+        const toEmail = process.env.TO_EMAIL;
+
+        console.log("BREVO_API_KEY défini:", !!apiKey);
+        console.log("FROM_EMAIL défini:", !!fromEmail);
+        console.log("TO_EMAIL défini:", !!toEmail);
+
+        if (!apiKey) throw new Error("BREVO_API_KEY manquant");
+        if (!fromEmail) throw new Error("FROM_EMAIL manquant");
+        if (!toEmail) throw new Error("TO_EMAIL manquant");
 
         const templatePath = path.resolve("src/templates/mail.html");
         let html = fs.readFileSync(templatePath, "utf8");
 
-        // Remplace les placeholders
         html = html
             .replace("{{nom}}", data.nom)
             .replace("{{email}}", data.email)
             .replace("{{message}}", data.message);
 
-        const msg = {
-            to: process.env.TO_EMAIL,
-            from: process.env.FROM_EMAIL!, // Adresse vérifiée sur SendGrid
+        const payload = {
+            sender: { name: "Portfolio Contact", email: fromEmail },
+            to: [{ email: toEmail }],
             subject: "📩 Nouveau message depuis ton portfolio",
-            html,
+            htmlContent: html
         };
 
-        try {
-            await sgMail.send(msg);
-            console.log("✅ Mail envoyé avec succès via SendGrid API");
-        } catch (error: any) {
-            console.error("Erreur SendGrid:", error.response?.body?.errors || error.message);
-            throw error;
-        }
+        const response = await axios.post(
+            `${this.baseUrl}/smtp/email`,
+            payload,
+            {
+                headers: {
+                    "api-key": apiKey,
+                    "Content-Type": "application/json",
+                    "accept": "application/json"
+                }
+            }
+        );
+
+        console.log("✅ Mail envoyé avec succès via Brevo");
+        return response.data;
     }
 }
+
